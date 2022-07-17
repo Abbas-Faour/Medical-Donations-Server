@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,8 +67,8 @@ builder.Services.AddAuthentication(options =>
         o.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            ValidateIssuer = false, // Make true on production
-            ValidateAudience = false, // Make true on production
+            ValidateIssuer = true, // Make true on production
+            ValidateAudience = true, // Make true on production
             ValidateLifetime = true,
             ValidIssuer = builder.Configuration["JWT:Issuer"],
             ValidAudience = builder.Configuration["JWT:Audience"],
@@ -101,7 +102,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // Seeding Database with data in the SeedingIdentity Class
-using (var scope = app.Services.CreateScope())
+  using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
